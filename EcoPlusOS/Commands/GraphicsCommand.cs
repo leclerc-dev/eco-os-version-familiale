@@ -1,11 +1,12 @@
-﻿using Cosmos.System.Graphics;
+﻿using System.Collections.Generic;
+using Cosmos.System.Graphics;
 using EcoPlusOS.UI;
 
 namespace EcoPlusOS.Commands
 {
     public class GraphicsCommand : ICommand
     {
-        public string[] Names { get; } = new[]
+        public List<string> Names { get; } = new List<string>
         {
             "graphiques",
             "graphics",

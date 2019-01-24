@@ -7,7 +7,7 @@ namespace EcoPlusOS.Commands
 {
     public class DebugCommand : ICommand
     {
-        public string[] Names { get; } =
+        public List<string> Names { get; } = new List<string>
         {
             "débogage",
             "debogage",
@@ -20,9 +20,10 @@ namespace EcoPlusOS.Commands
         {
             var arr = new List<int> {5, 2};
             Kernel.PrintDebug("array ok");
-            Extensions.AnyDelegate<int> predicate = (int val, out bool r) => r = val < 3;
+            Extensions.PredicateDelegate<int> predicate = (val,  r) => r.Value = val < 3;
             Kernel.PrintDebug("delegate ok");
             Console.WriteLine("Test any (should be true): " + arr.Any(predicate));
+            Console.WriteLine($"Random reflecc: {arr.GetType()}");
         }
     }
 }

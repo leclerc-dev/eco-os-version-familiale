@@ -6,7 +6,7 @@ namespace EcoPlusOS.Commands
 {
     public interface ICommand
     {
-        string[] Names { get; }
+        List<string> Names { get; }
         string Description { get; }
         
         void Execute(string parameter = null);

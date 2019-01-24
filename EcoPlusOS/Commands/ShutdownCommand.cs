@@ -1,8 +1,10 @@
-﻿namespace EcoPlusOS.Commands
+﻿using System.Collections.Generic;
+
+namespace EcoPlusOS.Commands
 {
     public class ShutdownCommand : ICommand
     {
-        public string[] Names { get; } =
+        public List<string> Names { get; } = new List<string>
         {
             "eteindre",
             "shutdown",

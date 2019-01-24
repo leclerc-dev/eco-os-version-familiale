@@ -1,5 +1,7 @@
-﻿using Cosmos.System.ScanMaps;
+﻿using Cosmos.System.Graphics;
+using Cosmos.System.ScanMaps;
 using EcoPlusOS.Commands;
+using EcoPlusOS.CustomLinq;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -25,53 +27,62 @@ namespace EcoPlusOS
 
         protected override void Run()
         {
+            try
+            {
+                RunInternal();
+            }
+            catch (Exception e)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("Nous sommes désolés, mais une erreur s'est produite et Leclerc s'en excuse.");
+                Console.WriteLine("Un paquet de 10 hamburgers éco+ vous sera livré sous peu.");
+                Console.WriteLine(
+                    "Voici quelques informations que nos ingénieurs informatiques professionels peuvent utiliser :");
+                Console.WriteLine($"{e.Message}");
+                PrintDebug($"Exception {e.Message}");
+                Console.ResetColor();
+            }
+
+        }
+
+        private static void RunInternal()
+        {
             Console.Write("éco+> ");
             var input = Console.ReadLine();
+            if (input is null) return;
             foreach (var command in AllCommands)
             {
                 foreach (var name in command.Names)
                 {
-                    if (input.StartsWith(name, StringComparison.OrdinalIgnoreCase))
+                    string param = null;
+                    if (input.TrimEnd().Length > name.Length)
                     {
-                        try
-                        {
-                            string param = null;
-                            if (input.TrimEnd().Length > name.Length)
-                            {
-                                param = input.Substring(name.Length).Trim();
-                            }
-
-                            command.Execute(param);
-                        }
-                        catch (Exception e)
-                        {
-                            Console.ForegroundColor = ConsoleColor.Red;
-                            Console.WriteLine("Nous sommes désolés, mais une erreur s'est produite et Leclerc s'en excuse.");
-                            Console.WriteLine("Un paquet de 10 hamburgers éco+ vous sera livré sous peu.");
-                            Console.WriteLine("Voici quelques informations que nos ingénieurs informatiques professionels peuvent utiliser :");
-                            Console.WriteLine($"{e.Message}");
-                            PrintDebug($"Exception {e.Message}");
-                            Console.ResetColor();
-                        }
+                        param = input.Substring(name.Length).Trim();
+                    }
+                    if (input.StartsWith(name, StringComparison.OrdinalIgnoreCase) && input.Length >= name.Length)
+                    {
+                        command.Execute(param);
                         return;
                     }
                 }
             }
-            Console.WriteLine("Désolé, mais nous avons trouvé aucune commande correspondante à la votre.");
+            Console.WriteLine("Désolé, mais Leclerc n'a pas trouvé aucune commande correspondante à la votre.");
         }
 
-        private static readonly ICommand[] AllCommands =
+        private static readonly List<ICommand> AllCommands = new List<ICommand>
         {
             new HelpCommand(),
             new GraphicsCommand(),
             new BenchmarkTestCommand(),
             new DebugCommand(),
-            new ShutdownCommand()
+            new ShutdownCommand(),
+            new PlaySongCommand()
         };
 
         private class HelpCommand : ICommand
         {
-            public string[] Names { get; } =
+            private const string UnknownHelpCommand = "Leclerc ne connait rien sur cette commande";
+            public List<string> Names { get; } = new List<string>
             {
                 "aide",
                 "help",
@@ -85,9 +96,31 @@ namespace EcoPlusOS
 
             public void Execute(string parameter = null)
             {
+                if (parameter != null)
+                {
+                    var selected = AllCommands.Where((val, r) =>
+                        r.Value = val.Names.Any((s, innerResult) =>
+                            innerResult.Value = s.Equals(parameter, StringComparison.OrdinalIgnoreCase)));
+                    if (selected.Any())
+                    {
+                        var command = selected[0];
+                        var builder = new StringBuilder();
+                        builder.AppendLine($"Commande {command.Names[0]}");
+                        builder.AppendLine($"Description: {command.Description}");
+                        builder.AppendLine("Autres noms: ");
+                        foreach (var name in command.Names)
+                        {
+                            builder.Append(name + ", ");
+                        }
+                        Console.WriteLine(builder.ToString());
+                        return;
+                    }
+                    Console.WriteLine(UnknownHelpCommand);
+                    return;
+                }
                 foreach (var cmd in AllCommands)
                 {
-                    Console.WriteLine($"{cmd.Names[0]} -> {cmd.Description ?? "Leclerc ne connait rien sur cette commande"}");
+                    Console.WriteLine($"{cmd.Names[0]} -> {cmd.Description ?? UnknownHelpCommand}");
                 }
             }
         }
