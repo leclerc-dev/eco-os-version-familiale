@@ -79,6 +79,15 @@ namespace EcoPlusOS.UI.Elements
         public ElPuebloDrawing(UIEnvironment env, Point location, Size size = default) : base(env, location, size)
         {
             InputBindings.Add(new MouseBinding(BeepBoopElPueblo, this));
+            InputBindings.Add(new KeyBinding(() => Move(5), ConsoleKeyEx.RightArrow));
+            InputBindings.Add(new KeyBinding(() => Move(-5), ConsoleKeyEx.LeftArrow));
+            InputBindings.Add(new KeyBinding(() => Move(y: 5), ConsoleKeyEx.UpArrow));
+            InputBindings.Add(new KeyBinding(() => Move(y: -5), ConsoleKeyEx.DownArrow));
+        }
+
+        private void Move(int x = 0, int y = 0)
+        {
+            Location = new Point(Location.X + x, Location.Y +y);
         }
 
         private void BeepBoopElPueblo()
