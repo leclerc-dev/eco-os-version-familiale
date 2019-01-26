@@ -78,7 +78,8 @@ namespace EcoPlusOS
             new ShutdownCommand(),
             new PlaySongCommand(),
             new ClearCommand(),
-            new LidlCommand()
+            new LidlCommand(),
+            new KiwiCommand()
         };
 
         private class HelpCommand : ICommand
@@ -91,6 +92,7 @@ namespace EcoPlusOS
                 "aled",
                 "aide-mwa",
                 "ausecours",
+                "JEANNE",
                 "osecours"
             };
 
