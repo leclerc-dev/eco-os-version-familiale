@@ -1,16 +1,31 @@
 ﻿using System.Drawing;
 using System.Runtime.CompilerServices;
 using Cosmos.System.Graphics;
+using EcoPlusOS.UI.Core;
 using Point = Cosmos.System.Graphics.Point;
 
 namespace EcoPlusOS.UI.Elements
 {
-    public class EcoPlusLogo : IDrawing
+    public class EcoPlusLogo : UIElement
     {
         private static readonly Pen EcoPlusBackgroundPen = new Pen(Color.Blue);
-        public void Draw(UIEnvironment canvas, Point location, int width, int height)
+        protected override void DrawImplementation()
         {
-            canvas.DrawFilledRectangle(EcoPlusBackgroundPen, location, width, height);
+            Environment.DrawFilledRectangle(EcoPlusBackgroundPen, Location, Size.Width, Size.Height);
+        }
+        protected override bool HitTest(Point pixel)
+        {
+            var width = Location.X + Size.Width;
+            var height = Location.Y + Size.Height;
+            return width >= pixel.X && width <= pixel.X || height >= pixel.Y && height <= pixel.Y;
+        }
+
+        public EcoPlusLogo(UIEnvironment env) : base(env)
+        {
+        }
+
+        public EcoPlusLogo(UIEnvironment env, Point location, Size size = default) : base(env, location, size)
+        {
         }
     }
 }

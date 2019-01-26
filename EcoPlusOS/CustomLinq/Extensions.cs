@@ -59,9 +59,17 @@ namespace EcoPlusOS.CustomLinq
 
             return list;
         }
-
         //public static List<T> Where<T>(this T[] enumerable, PredicateDelegate<T> predicate) =>
         //    enumerable.ToList().Where(predicate);
+        public static int CustomIndexOf<T>(this IList<T> list, T element)
+        {
+            for (int i = 0; i < list.Count; i++)
+            {
+                if (list[i]?.Equals(element) ?? false) return i;
+            }
+
+            return -1;
+        }
         public static List<T> ToList<T>(this T[] array)
         {
             var l = new List<T>();

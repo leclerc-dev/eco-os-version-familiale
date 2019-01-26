@@ -3,16 +3,28 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28307.271
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EcoPlusOS", "EcoPlusOS\EcoPlusOS.csproj", "{1D36E654-6B93-4FBF-B6C3-8380E408507F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EcoPlusOS", "EcoPlusOS\EcoPlusOS.csproj", "{1D36E654-6B93-4FBF-B6C3-8380E408507F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug_VBE|Any CPU = Debug_VBE|Any CPU
+		Debug_VMWare|Any CPU = Debug_VMWare|Any CPU
 		Debug|Any CPU = Debug|Any CPU
+		Release_VBE|Any CPU = Release_VBE|Any CPU
+		Release_VMWare|Any CPU = Release_VMWare|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1D36E654-6B93-4FBF-B6C3-8380E408507F}.Debug_VBE|Any CPU.ActiveCfg = Debug_VBE|Any CPU
+		{1D36E654-6B93-4FBF-B6C3-8380E408507F}.Debug_VBE|Any CPU.Build.0 = Debug_VBE|Any CPU
+		{1D36E654-6B93-4FBF-B6C3-8380E408507F}.Debug_VMWare|Any CPU.ActiveCfg = Debug_VMWare|Any CPU
+		{1D36E654-6B93-4FBF-B6C3-8380E408507F}.Debug_VMWare|Any CPU.Build.0 = Debug_VMWare|Any CPU
 		{1D36E654-6B93-4FBF-B6C3-8380E408507F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{1D36E654-6B93-4FBF-B6C3-8380E408507F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1D36E654-6B93-4FBF-B6C3-8380E408507F}.Release_VBE|Any CPU.ActiveCfg = Release_VBE|Any CPU
+		{1D36E654-6B93-4FBF-B6C3-8380E408507F}.Release_VBE|Any CPU.Build.0 = Release_VBE|Any CPU
+		{1D36E654-6B93-4FBF-B6C3-8380E408507F}.Release_VMWare|Any CPU.ActiveCfg = Release_VMWare|Any CPU
+		{1D36E654-6B93-4FBF-B6C3-8380E408507F}.Release_VMWare|Any CPU.Build.0 = Release_VMWare|Any CPU
 		{1D36E654-6B93-4FBF-B6C3-8380E408507F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1D36E654-6B93-4FBF-B6C3-8380E408507F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
