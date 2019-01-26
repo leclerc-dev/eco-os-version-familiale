@@ -13,13 +13,6 @@ namespace EcoPlusOS.UI.Elements
         {
             Environment.DrawFilledRectangle(EcoPlusBackgroundPen, Location, Size.Width, Size.Height);
         }
-        protected override bool HitTest(Point pixel)
-        {
-            var width = Location.X + Size.Width;
-            var height = Location.Y + Size.Height;
-            return width >= pixel.X && width <= pixel.X || height >= pixel.Y && height <= pixel.Y;
-        }
-
         public EcoPlusLogo(UIEnvironment env) : base(env)
         {
         }

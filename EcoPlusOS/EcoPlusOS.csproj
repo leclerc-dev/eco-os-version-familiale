@@ -83,6 +83,7 @@
         <IntelEdison_StackCorruptionDetectionEnabled>True</IntelEdison_StackCorruptionDetectionEnabled>
         <VMware_Name>VMware User 001</VMware_Name>
         <IntelEdison_StartCosmosGDB>False</IntelEdison_StartCosmosGDB>
+        <Platforms>AnyCPU;x86</Platforms>
     </PropertyGroup>
 
     <PropertyGroup>
@@ -102,7 +103,20 @@
       <DefineConstants>DEBUG;TRACE</DefineConstants>
     </PropertyGroup>
 
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">
+      <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+      <DefineConstants>DEBUG;TRACE</DefineConstants>
+    </PropertyGroup>
+
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_VMWare|AnyCPU'">
+      <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+      <DefineConstants>DEBUG;TRACE;VMWare</DefineConstants>
+      <Optimize>false</Optimize>
+      <StackCorruptionDetectionLevel>MethodFooters</StackCorruptionDetectionLevel>
+      <TraceMode>Cosmos</TraceMode>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_VMWare|x86'">
       <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
       <DefineConstants>DEBUG;TRACE;VMWare</DefineConstants>
       <Optimize>false</Optimize>
@@ -118,7 +132,22 @@
       <StackCorruptionDetectionLevel>AllInstructions</StackCorruptionDetectionLevel>
     </PropertyGroup>
 
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_VMWare|x86'">
+      <Optimize>false</Optimize>
+      <DefineConstants>TRACE;VMWare</DefineConstants>
+      <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+      <DebugEnabled>False</DebugEnabled>
+      <StackCorruptionDetectionLevel>AllInstructions</StackCorruptionDetectionLevel>
+    </PropertyGroup>
+
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_VBE|AnyCPU'">
+      <DefineConstants>TRACE;VBE</DefineConstants>
+      <Optimize>false</Optimize>
+      <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+      <DebugEnabled>False</DebugEnabled>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_VBE|x86'">
       <DefineConstants>TRACE;VBE</DefineConstants>
       <Optimize>false</Optimize>
       <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
@@ -131,7 +160,17 @@
       <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     </PropertyGroup>
 
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_VBE|x86'">
+      <DefineConstants>DEBUG;TRACE;VBE</DefineConstants>
+      <Optimize>false</Optimize>
+      <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    </PropertyGroup>
+
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+      <Optimize>false</Optimize>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'">
       <Optimize>false</Optimize>
     </PropertyGroup>
 

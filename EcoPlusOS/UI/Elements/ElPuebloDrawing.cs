@@ -50,6 +50,7 @@ namespace EcoPlusOS.UI.Elements
             Environment.DrawImage(ElPuebloBitmap, Location);
         }
 
+        protected override Rectangle GetRenderBounds() => new Rectangle(SystemPointLocation, new Size((int)ElPuebloBitmap.Width, (int)ElPuebloBitmap.Height));
         public ElPuebloDrawing(UIEnvironment env) : base(env)
         {
         }

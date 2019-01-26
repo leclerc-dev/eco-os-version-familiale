@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net;
 
 namespace EcoPlusOS.CustomLinq
 {
@@ -61,14 +62,39 @@ namespace EcoPlusOS.CustomLinq
         }
         //public static List<T> Where<T>(this T[] enumerable, PredicateDelegate<T> predicate) =>
         //    enumerable.ToList().Where(predicate);
-        public static int CustomIndexOf<T>(this IList<T> list, T element)
+        public static int CustomIndexOf<T>(this IList<T> list, ref T element) where T : class
         {
             for (int i = 0; i < list.Count; i++)
             {
-                if (list[i]?.Equals(element) ?? false) return i;
+                Kernel.PrintDebug("Custom index owo what's the " + i + "?");
+                if (list[i] == element) return i;
             }
 
             return -1;
+        }
+
+        public static List<T> Skip<T>(this List<T> list, int count)
+        {
+            var copy = new List<T>();
+            Kernel.PrintDebug("Let's skip");
+            if (count <= 0) count = 1;
+            for (int i = count - 1; i < list.Count; i++)
+            {
+                Kernel.PrintDebug("Skipping: " + i);
+                copy.Add(list[i]);
+            }
+            return copy;
+        }
+
+        public static List<T> CustomReverse<T>(this List<T> list)
+        {
+            var copy = new List<T>();
+            for (int i = list.Count - 1; i >= 0; i--)
+            {
+                Kernel.PrintDebug("adding reverse: " + i);
+                copy.Add(list[i]);
+            }
+            return copy;
         }
         public static List<T> ToList<T>(this T[] array)
         {

@@ -16,8 +16,6 @@ namespace EcoPlusOS.UI.Elements
         {
             _drawing = drawing;
         }
-
-        protected override bool HitTest(Point request) => _drawing.HitTest(request, Location, Size);
         protected override void DrawImplementation()
         {
             _drawing.Draw(Environment, Location, Size);

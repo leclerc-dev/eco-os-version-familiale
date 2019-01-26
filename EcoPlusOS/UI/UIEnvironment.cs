@@ -2,8 +2,10 @@
 using Cosmos.HAL.Drivers.PCI.Video;
 using Cosmos.System;
 using Cosmos.System.Graphics;
+using EcoPlusOS.CustomLinq;
 using EcoPlusOS.UI.Core;
 using EcoPlusOS.UI.Elements;
+using EcoPlusOS.UI.Internal;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -11,8 +13,6 @@ using System.Drawing;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
-using EcoPlusOS.CustomLinq;
-using EcoPlusOS.UI.Internal;
 using Console = System.Console;
 using Point = Cosmos.System.Graphics.Point;
 
@@ -68,19 +68,58 @@ namespace EcoPlusOS.UI
             _elements.Add(_mouseCursor);
             //ElPueblo.Draw(this, new Point(100, 55));
             MouseManagerEx.SetDimensions(mode);
-            UIElement.ElementDrawn += UIElementUpdated;
+            UIElement.ElementDrawn = UIElementUpdated;
             Start();
         }
 
-        private void UIElementUpdated(UIElement element)
+        private void UIElementUpdated(UIElement element, Rectangle previousBounds)
         {
             UIElement.EnableEvent = false;
-            for (int i = _elements.Count - 1; i <= _elements.CustomIndexOf(element); i--)
-            {
-                var current = _elements[i];
-                current.Draw();
-            }
+            //var copy = new List<UIElement>();
+            //int index = -1;
+            //for (int i = 0; i < _elements.Count; i++)
+            //{
+            //    if (_elements[i] == element)
+            //    {
+            //        index = i;
+            //        break;
+            //    }
+            //}
+            //if (index == -1) goto fallback; // goto = éco+ code
+            //for (int i = index; i < _elements.Count; i++)
+            //{
+            //    Kernel.PrintDebug("Skipping: " + i);
+            //    copy.Add(_elements[i]);
+            //}
+            //copy = copy.CustomReverse();
+            //foreach (var e in copy)
+            //{
+            //    e.Draw();
+            //}
+            // SOOON smth better TODO please ^^
+            ProcessIntersections(element);
+            fallback:
             UIElement.EnableEvent = true;
+        }
+
+        private void ProcessIntersections(UIElement element, int startingIndex = 0)
+        {
+            var elementsSoFar = new List<UIElement>();
+            for (var i = startingIndex; i < _elements.Count; i++)
+            {
+                var e = _elements[i];
+                bool condition = e.LastRenderedBounds.IntersectsWith(element.LastRenderedBounds);
+                foreach (var middleElement in elementsSoFar)
+                {
+                    if (condition) break;
+                    condition = e.LastRenderedBounds.IntersectsWith(middleElement.LastRenderedBounds);
+                }
+                if (condition)
+                {
+                    elementsSoFar.Add(e);
+                    e.Draw();
+                }
+            }
         }
 
         #region Startup

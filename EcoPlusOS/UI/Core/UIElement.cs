@@ -5,11 +5,11 @@ using Point = Cosmos.System.Graphics.Point;
 
 namespace EcoPlusOS.UI.Core
 {
-    public delegate void ElementDrawnDelegate(UIElement element);
+    public delegate void ElementDrawnDelegate(UIElement element, Rectangle previousBounds);
     public abstract class UIElement : Drawing
     {
-        public static DelegateAggregator<ElementDrawnDelegate> _elementDrawn = new DelegateAggregator<ElementDrawnDelegate>();
         public static bool EnableEvent { get; set; } = true;
+        public Rectangle LastRenderedBounds { get; private set; }
         private Point _location;
 
         public Point Location
@@ -33,16 +33,12 @@ namespace EcoPlusOS.UI.Core
             }
         }
 
-        public static DelegateAggregator<ElementDrawnDelegate> ElementDrawn
-        {
-            get => _elementDrawn;
-            set { /* no */ }
-        }
+        public static ElementDrawnDelegate ElementDrawn { get; set; } = null;
 
         public bool IsDirty;
         protected readonly UIEnvironment Environment;
 
-        protected UIElement(UIEnvironment env, Point location, Size size, bool drawInCtor)
+        protected UIElement(UIEnvironment env, Point location, Size size, bool drawInCtor = true)
         {
             Environment = env;
             _location = location;
@@ -69,27 +65,25 @@ namespace EcoPlusOS.UI.Core
 
         public void Draw()
         {
+            var previous = GetRenderBounds();
             DrawImplementation();
-            if (EnableEvent)
-                ElementDrawn.Invoke(this);
+            LastRenderedBounds = GetRenderBounds();
+            if (EnableEvent && ElementDrawn != null)
+            {
+                ElementDrawn(this, previous);
+            }
         }
+
+        protected System.Drawing.Point SystemPointLocation => new System.Drawing.Point(Location.X, Location.Y);
+        protected virtual Rectangle GetRenderBounds() => new Rectangle(SystemPointLocation, Size);
         protected abstract void DrawImplementation();
-        public sealed override bool HitTest(Point requested, Point currentLocation, Size size)
-        {
-            return HitTest(requested);
-        }
-
-        protected virtual bool HitTest(Point request)
-        {
-            return false;
-        }
     }
 
-    public static class UIElementEventsExtensions
-    {
-        public static void Invoke(this DelegateAggregator<ElementDrawnDelegate> aggr, UIElement element)
-        {
-            aggr.Invoke(d => d(element));
-        }
-    }
+    //public static class UIElementEventsExtensions
+    //{
+    //    public static void Invoke(this DelegateAggregator<ElementDrawnDelegate> aggr, UIElement element)
+    //    {
+    //        aggr.Invoke(d => d(element));
+    //    }
+    //}
 }

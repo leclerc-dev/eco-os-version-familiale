@@ -5,11 +5,11 @@ namespace EcoPlusOS
 {
     public class DelegateAggregator<T> : List<T> where T : Delegate
     {
-        public void Invoke(Action<T> parameters)
+        public delegate void Invoker(T d);
+        public void Invoke(Invoker parameters)
         {
             foreach (var del in this)
             {
-                if (del == null) continue;
                 parameters(del);
             }
         }

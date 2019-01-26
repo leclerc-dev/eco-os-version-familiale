@@ -22,21 +22,9 @@ namespace EcoPlusOS.UI.Elements
         }
         protected override void DrawImplementation()
         {
-            Kernel.PrintDebug("Draw mousy");
-            if (_pen == null)
-            {
-                Kernel.PrintDebug("Eww no it's null");
-                return;
-            }
-            else
-            {
-                Kernel.PrintDebug("Pen not null OwO");
-                Kernel.PrintDebug($"The location is {Location.X} | {Location.Y} and FUN FACT XD the sizez is {Size}");
-            }
-
             try
             {
-                Environment.DrawFilledRectangle(_pen, Location, 2, 2);
+                Environment.DrawFilledRectangle(_pen, Location, Size.Width, Size.Height);
             }
             catch (Exception e)
             {

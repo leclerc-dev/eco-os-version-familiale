@@ -76,7 +76,8 @@ namespace EcoPlusOS
             new BenchmarkTestCommand(),
             new DebugCommand(),
             new ShutdownCommand(),
-            new PlaySongCommand()
+            new PlaySongCommand(),
+            new ClearCommand()
         };
 
         private class HelpCommand : ICommand
