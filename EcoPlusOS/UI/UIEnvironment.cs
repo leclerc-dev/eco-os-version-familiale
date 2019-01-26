@@ -97,18 +97,23 @@ namespace EcoPlusOS.UI
             //    e.Draw();
             //}
             // SOOON smth better TODO please ^^
-            ProcessIntersections(element);
-            fallback:
+            ProcessIntersections(element, previousBounds);
+        fallback:
             UIElement.EnableEvent = true;
         }
 
-        private void ProcessIntersections(UIElement element, int startingIndex = 0)
+        private void ProcessIntersections(UIElement element, Rectangle previousBounds, int startingIndex = 0)
         {
             var elementsSoFar = new List<UIElement>();
             for (var i = startingIndex; i < _elements.Count; i++)
             {
                 var e = _elements[i];
-                bool condition = e.LastRenderedBounds.IntersectsWith(element.LastRenderedBounds);
+                if (e == element)
+                {
+                    e.Draw();
+                    continue;
+                }
+                var condition = e.LastRenderedBounds.IntersectsWith(element.LastRenderedBounds);
                 foreach (var middleElement in elementsSoFar)
                 {
                     if (condition) break;
@@ -117,7 +122,8 @@ namespace EcoPlusOS.UI
                 if (condition)
                 {
                     elementsSoFar.Add(e);
-                    e.Draw();
+                    if (!e.TryDrawPartial(previousBounds))
+                        e.Draw();
                 }
             }
         }

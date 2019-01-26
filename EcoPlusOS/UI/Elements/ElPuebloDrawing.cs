@@ -1,6 +1,6 @@
-﻿using System.Drawing;
-using Cosmos.System.Graphics;
+﻿using Cosmos.System.Graphics;
 using EcoPlusOS.UI.Core;
+using System.Drawing;
 using Point = Cosmos.System.Graphics.Point;
 
 namespace EcoPlusOS.UI.Elements
@@ -50,7 +50,24 @@ namespace EcoPlusOS.UI.Elements
             Environment.DrawImage(ElPuebloBitmap, Location);
         }
 
-        protected override Rectangle GetRenderBounds() => new Rectangle(SystemPointLocation, new Size((int)ElPuebloBitmap.Width, (int)ElPuebloBitmap.Height));
+        protected override Rectangle GetRenderBounds()
+        {
+            return new Rectangle(SystemPointLocation, new Size((int)ElPuebloBitmap.Width, (int)ElPuebloBitmap.Height));
+        }
+
+        protected override bool TryDrawPartialImplementation(Rectangle bounds, Rectangle relativeBounds)
+        {
+            for (var index1 = relativeBounds.X; index1 < relativeBounds.Width; ++index1)
+            {
+                for (var index2 = relativeBounds.Y; index2 < relativeBounds.Height; ++index2)
+                    Environment.DrawPoint(new Pen(
+                            Color.FromArgb(ElPuebloBitmap.rawData[index1 + index2 * ElPuebloBitmap.Width])),
+                        bounds.X + index1,
+                        bounds.Y + index2);
+            }
+            return true;
+        }
+
         public ElPuebloDrawing(UIEnvironment env) : base(env)
         {
         }

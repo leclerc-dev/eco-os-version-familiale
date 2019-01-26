@@ -13,6 +13,13 @@ namespace EcoPlusOS.UI.Elements
         {
             Environment.DrawFilledRectangle(EcoPlusBackgroundPen, Location, Size.Width, Size.Height);
         }
+
+        protected override bool TryDrawPartialImplementation(Rectangle bounds, Rectangle relativeBounds)
+        {
+            DrawingHelpers.DrawRectanglePartial(Environment, EcoPlusBackgroundPen, bounds, relativeBounds);
+            return true;
+        }
+
         public EcoPlusLogo(UIEnvironment env) : base(env)
         {
         }

@@ -9,6 +9,7 @@ namespace EcoPlusOS.UI.Core
     public abstract class UIElement : Drawing
     {
         public static bool EnableEvent { get; set; } = true;
+        public Rectangle EarlierRenderedBounds { get; set; }
         public Rectangle LastRenderedBounds { get; private set; }
         private Point _location;
 
@@ -17,6 +18,7 @@ namespace EcoPlusOS.UI.Core
             get => _location;
             set
             {
+                EarlierRenderedBounds = GetRenderBounds();
                 if (_location.X == value.X && Location.Y == value.Y) return;
                 _location = value; Draw();
             }
@@ -29,6 +31,7 @@ namespace EcoPlusOS.UI.Core
             set
             {
                 if (_size == value) return;
+                EarlierRenderedBounds = GetRenderBounds();
                 _size = value; Draw();
             }
         }
@@ -58,6 +61,7 @@ namespace EcoPlusOS.UI.Core
 
         public void SetLocationAndSize(Point p, Size s)
         {
+            EarlierRenderedBounds = GetRenderBounds();
             _location = p;
             _size = s;
             Draw();
@@ -65,18 +69,39 @@ namespace EcoPlusOS.UI.Core
 
         public void Draw()
         {
-            var previous = GetRenderBounds();
+            var e = EarlierRenderedBounds;
             DrawImplementation();
             LastRenderedBounds = GetRenderBounds();
             if (EnableEvent && ElementDrawn != null)
             {
-                ElementDrawn(this, previous);
+                ElementDrawn(this, e);
             }
         }
 
         protected System.Drawing.Point SystemPointLocation => new System.Drawing.Point(Location.X, Location.Y);
-        protected virtual Rectangle GetRenderBounds() => new Rectangle(SystemPointLocation, Size);
+        protected virtual Rectangle GetRenderBounds()
+        {
+            return new Rectangle(SystemPointLocation, Size);
+        }
+
         protected abstract void DrawImplementation();
+        // private static readonly Size SafetyInflation = new Size(8, 8);
+        public bool TryDrawPartial(Rectangle bounds)
+        {
+            //bounds.Inflate(SafetyInflation);
+            //bounds.X -= SafetyInflation.Width / 2;
+            //bounds.Y -= SafetyInflation.Height / 2;
+            Rectangle calculated = bounds;
+            calculated.Intersect(LastRenderedBounds);
+            if (calculated == Rectangle.Empty) return true; // yay who cares excs dee
+            Kernel.PrintDebug("Normal request bounds: " + bounds + " ; calculated please " + calculated);
+            return TryDrawPartialImplementation(bounds, calculated);
+        }
+
+        protected virtual bool TryDrawPartialImplementation(Rectangle bounds, Rectangle relativeBounds)
+        {
+            return false;
+        }
     }
 
     //public static class UIElementEventsExtensions

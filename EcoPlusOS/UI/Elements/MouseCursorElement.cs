@@ -31,5 +31,11 @@ namespace EcoPlusOS.UI.Elements
                 Kernel.PrintDebug("Oh no my mousy " + e);
             }
         }
+
+        protected override bool TryDrawPartialImplementation(Rectangle bounds, Rectangle relativeBounds)
+        {
+            DrawingHelpers.DrawRectanglePartial(Environment, _pen, bounds, relativeBounds);
+            return true;
+        }
     }
 }
