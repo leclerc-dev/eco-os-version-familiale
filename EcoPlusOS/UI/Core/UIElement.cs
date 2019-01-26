@@ -43,7 +43,7 @@ namespace EcoPlusOS.UI.Core
         }
         protected abstract void DrawImplementation();
         // private static readonly Size SafetyInflation = new Size(8, 8);
-        public bool TryDrawPartial(Rectangle bounds)
+        public bool TryDrawPartial(Rectangle bounds, bool respectSizes = true)
         {
             //bounds.Inflate(SafetyInflation);
             //bounds.X -= SafetyInflation.Width / 2;
@@ -55,8 +55,13 @@ namespace EcoPlusOS.UI.Core
             {
                 calculated.Intersect(LastRenderedBounds);
             }
-            calculated.X -= LastRenderedBounds.X;
-            calculated.Y -= LastRenderedBounds.Y;
+
+            if (respectSizes)
+            {
+                calculated.X -= LastRenderedBounds.X;
+                calculated.Y -= LastRenderedBounds.Y;
+            }
+
             if (calculated == Rectangle.Empty) return true; // yay who cares excs dee
             return TryDrawPartialImplementation(bounds, calculated);
         }

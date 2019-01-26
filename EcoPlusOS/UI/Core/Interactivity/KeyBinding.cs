@@ -7,7 +7,7 @@ namespace EcoPlusOS.UI.Core.Interactivity
     {
         public Modifier Modifier { get; set; }
         public ConsoleKeyEx MappedKey { get; set; }
-        public KeyBinding(Action call, Modifier modifiers, ConsoleKeyEx mappedKey) : base(call)
+        public KeyBinding(Action call, ConsoleKeyEx mappedKey, Modifier modifiers = Modifier.None) : base(call)
         {
             Modifier = modifiers;
             MappedKey = mappedKey;

@@ -104,12 +104,14 @@ namespace EcoPlusOS.UI
         private void ProcessIntersections(UIElement element, Rectangle previousBounds, int startingIndex = 0)
         {
             var elementsSoFar = new List<UIElement>();
+            bool areInFront = false;
             for (var i = startingIndex; i < _elements.Count; i++)
             {
                 var e = _elements[i];
                 if (e == element)
                 {
                     e.Draw();
+                    areInFront = true;
                     continue;
                 }
                 var condition = e.LastRenderedBounds.IntersectsWith(element.LastRenderedBounds)
@@ -127,7 +129,7 @@ namespace EcoPlusOS.UI
                 if (condition)
                 {
                     elementsSoFar.Add(e);
-                    if (!e.TryDrawPartial(previousBounds))
+                    if (areInFront || !e.TryDrawPartial(previousBounds)) // TODO add better drawing for those in front. Please :c
                         e.Draw();
                 }
             }
@@ -150,9 +152,9 @@ namespace EcoPlusOS.UI
         {
             while (true)
             {
+                HandleUIElementEvents();
                 DrawMouse();
                 HandleKeyboardEvents();
-                HandleUIElementEvents();
                 if (!Driver.Enabled)
                 {
 #if !VMWare
