@@ -92,9 +92,15 @@ namespace EcoPlusOS.UI.Core
             //bounds.X -= SafetyInflation.Width / 2;
             //bounds.Y -= SafetyInflation.Height / 2;
             Rectangle calculated = bounds;
-            calculated.Intersect(LastRenderedBounds);
+            var intersection = calculated.IntersectsWith(LastRenderedBounds);
+            if (!intersection && !LastRenderedBounds.Contains(bounds)) return true; // yea everything went fine
+            if (intersection)
+            {
+                calculated.Intersect(LastRenderedBounds);
+            }
+            calculated.X -= LastRenderedBounds.X;
+            calculated.Y -= LastRenderedBounds.Y;
             if (calculated == Rectangle.Empty) return true; // yay who cares excs dee
-            Kernel.PrintDebug("Normal request bounds: " + bounds + " ; calculated please " + calculated);
             return TryDrawPartialImplementation(bounds, calculated);
         }
 

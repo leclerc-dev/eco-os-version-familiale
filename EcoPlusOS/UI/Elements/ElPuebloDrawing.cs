@@ -52,18 +52,22 @@ namespace EcoPlusOS.UI.Elements
 
         protected override Rectangle GetRenderBounds()
         {
-            return new Rectangle(SystemPointLocation, new Size((int)ElPuebloBitmap.Width, (int)ElPuebloBitmap.Height));
+            return new Rectangle(SystemPointLocation, new Size(64, 64));
         }
 
         protected override bool TryDrawPartialImplementation(Rectangle bounds, Rectangle relativeBounds)
         {
-            for (var index1 = relativeBounds.X; index1 < relativeBounds.Width; ++index1)
+            for (var boundsX = relativeBounds.X; boundsX < relativeBounds.Right; ++boundsX)
             {
-                for (var index2 = relativeBounds.Y; index2 < relativeBounds.Height; ++index2)
+                for (var boundsY = relativeBounds.Y; boundsY < relativeBounds.Bottom; ++boundsY)
+                {
+                    var totalX = Location.X + boundsX;
+                    var totalY = Location.Y + boundsY;
                     Environment.DrawPoint(new Pen(
-                            Color.FromArgb(ElPuebloBitmap.rawData[index1 + index2 * ElPuebloBitmap.Width])),
-                        bounds.X + index1,
-                        bounds.Y + index2);
+                            Color.FromArgb(ElPuebloBitmap.rawData[boundsX + boundsY * ElPuebloBitmap.Width])),
+                        totalX,
+                        totalY);
+                }
             }
             return true;
         }

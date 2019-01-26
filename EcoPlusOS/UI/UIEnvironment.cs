@@ -98,7 +98,6 @@ namespace EcoPlusOS.UI
             //}
             // SOOON smth better TODO please ^^
             ProcessIntersections(element, previousBounds);
-        fallback:
             UIElement.EnableEvent = true;
         }
 
@@ -113,11 +112,17 @@ namespace EcoPlusOS.UI
                     e.Draw();
                     continue;
                 }
-                var condition = e.LastRenderedBounds.IntersectsWith(element.LastRenderedBounds);
+                var condition = e.LastRenderedBounds.IntersectsWith(element.LastRenderedBounds)
+                                || e.LastRenderedBounds.Contains(element.LastRenderedBounds)
+                                || e.LastRenderedBounds.IntersectsWith(previousBounds)
+                                || e.LastRenderedBounds.Contains(previousBounds);
                 foreach (var middleElement in elementsSoFar)
                 {
                     if (condition) break;
-                    condition = e.LastRenderedBounds.IntersectsWith(middleElement.LastRenderedBounds);
+                    condition = e.LastRenderedBounds.IntersectsWith(middleElement.LastRenderedBounds)
+                                || e.LastRenderedBounds.Contains(element.LastRenderedBounds)
+                                || e.LastRenderedBounds.IntersectsWith(previousBounds)
+                                || e.LastRenderedBounds.Contains(previousBounds);
                 }
                 if (condition)
                 {
