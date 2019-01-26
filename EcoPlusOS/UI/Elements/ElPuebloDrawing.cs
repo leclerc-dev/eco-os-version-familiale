@@ -1,6 +1,10 @@
-﻿using Cosmos.System.Graphics;
+﻿using System.Collections.Generic;
+using Cosmos.System.Graphics;
 using EcoPlusOS.UI.Core;
 using System.Drawing;
+using Cosmos.System;
+using EcoPlusOS.Audio;
+using EcoPlusOS.UI.Core.Interactivity;
 using Point = Cosmos.System.Graphics.Point;
 
 namespace EcoPlusOS.UI.Elements
@@ -72,12 +76,14 @@ namespace EcoPlusOS.UI.Elements
             return true;
         }
 
-        public ElPuebloDrawing(UIEnvironment env) : base(env)
-        {
-        }
-
         public ElPuebloDrawing(UIEnvironment env, Point location, Size size = default) : base(env, location, size)
         {
+            InputBindings.Add(new MouseBinding(BeepBoopElPueblo, this));
+        }
+
+        private void BeepBoopElPueblo()
+        {
+            Songs.ElPuebloTouch.Play();
         }
     }
 }

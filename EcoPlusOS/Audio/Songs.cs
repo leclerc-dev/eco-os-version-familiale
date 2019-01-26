@@ -15,5 +15,12 @@ namespace EcoPlusOS.Audio
             new SongPart(Notes.G4, 150, 10),
             new SongPart(Notes.G2, Durations.Quarter)
         };
+
+        public static readonly Song ElPuebloTouch = new List<SongPart>
+        {
+            new SongPart(Notes.C3, 175),
+            new SongPart(Notes.C2, 250),
+            new SongPart(Notes.CS2, 350)
+        };
     }
 }

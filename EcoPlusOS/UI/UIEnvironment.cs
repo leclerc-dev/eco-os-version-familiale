@@ -152,6 +152,7 @@ namespace EcoPlusOS.UI
             {
                 DrawMouse();
                 HandleKeyboardEvents();
+                HandleUIElementEvents();
                 if (!Driver.Enabled)
                 {
 #if !VMWare
@@ -184,6 +185,14 @@ namespace EcoPlusOS.UI
             catch (Exception e)
             {
                 Cosmos.System.Kernel.PrintDebug($"something gone wrong in the mouse thingo: {e.Message}");
+            }
+        }
+
+        private void HandleUIElementEvents()
+        {
+            foreach (var element in _elements)
+            {
+                element.TriggerEvents();
             }
         }
 #if VMWare

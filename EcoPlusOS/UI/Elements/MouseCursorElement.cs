@@ -16,7 +16,7 @@ namespace EcoPlusOS.UI.Elements
             _pen.Color = mouseColor;
         }
 
-        public MouseCursorElement(UIEnvironment env) : this(env, Color.Black, new Point(0, 0), new Size(2, 2))
+        public MouseCursorElement(UIEnvironment env) : this(env, Color.Red, new Point(0, 0), new Size(4, 4))
         {
             
         }

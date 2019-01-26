@@ -64,6 +64,7 @@ namespace EcoPlusOS.Audio
                 Beep(frequency);
                 SpeakerPIT.Wait(duration);
                 DisableSound();
+                if (delay > 0)
                 SpeakerPIT.Wait(delay);
             }
         }
