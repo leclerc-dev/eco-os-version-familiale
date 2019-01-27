@@ -1,8 +1,8 @@
-﻿using EcoPlusOS.UI.Elements;
+﻿using EcoPlusOS.UI.Core.Interactivity;
+using EcoPlusOS.UI.Elements;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using EcoPlusOS.UI.Core.Interactivity;
 using Point = Cosmos.System.Graphics.Point;
 
 namespace EcoPlusOS.UI.Core
@@ -31,6 +31,7 @@ namespace EcoPlusOS.UI.Core
             _size = size;
             Draw();
         }
+
         public void Draw()
         {
             var e = EarlierRenderedBounds;
@@ -51,17 +52,12 @@ namespace EcoPlusOS.UI.Core
             var calculated = bounds;
             var intersection = calculated.IntersectsWith(LastRenderedBounds);
             if (!intersection && !LastRenderedBounds.Contains(bounds)) return true; // yea everything went fine
-            if (intersection)
-            {
-                calculated.Intersect(LastRenderedBounds);
-            }
-
+            calculated.Intersect(LastRenderedBounds);
             if (respectSizes)
             {
                 calculated.X -= LastRenderedBounds.X;
                 calculated.Y -= LastRenderedBounds.Y;
             }
-
             if (calculated == Rectangle.Empty) return true; // yay who cares excs dee
             return TryDrawPartialImplementation(bounds, calculated);
         }
@@ -72,7 +68,7 @@ namespace EcoPlusOS.UI.Core
         }
         #endregion
         #region Interactivity
-        protected List<InputBinding> InputBindings { get; } = new List<InputBinding>();  
+        protected List<InputBinding> InputBindings { get; } = new List<InputBinding>();
         public void TriggerEvents()
         {
             foreach (var t in InputBindings)
@@ -89,7 +85,7 @@ namespace EcoPlusOS.UI.Core
             IsEnabled = false;
             foreach (var binding in InputBindings)
             {
-                binding.Enabled = false;
+                binding.DisableHooks();
             }
             InputBindings.Clear();
         }
@@ -101,13 +97,13 @@ namespace EcoPlusOS.UI.Core
         private Point _location;
         protected readonly UIEnvironment Environment;
 
-        public Point Location
+        public unsafe Point Location
         {
             get => _location;
             set
             {
+                if (_location.AreTheSame(&value)) return;
                 EarlierRenderedBounds = GetRenderBounds();
-                if (_location.X == value.X && Location.Y == value.Y) return;
                 _location = value; Draw();
             }
         }
@@ -134,6 +130,17 @@ namespace EcoPlusOS.UI.Core
             _location = p;
             _size = s;
             Draw();
+        }
+        #endregion
+        #region Random     
+
+        protected int RandomX()
+        {
+            return EcoRand.Instance.Next(0, Environment.Mode.Columns - Size.Width);
+        }
+        protected int RandomY()
+        {
+            return EcoRand.Instance.Next(0, Environment.Mode.Rows - Size.Height);
         }
         #endregion
     }

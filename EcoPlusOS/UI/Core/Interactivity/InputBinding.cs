@@ -9,13 +9,17 @@ namespace EcoPlusOS.UI.Core.Interactivity
         public bool Enabled { get; set; } = true; 
         protected abstract bool ShouldTriggerImplementation();
 
+        public virtual void DisableHooks()
+        {
+            Enabled = false;
+        }
         public bool ShouldTrigger()
         {
             if (!Enabled) return false;
             return ShouldTriggerImplementation();
         }
 
-        public void Process()
+        public virtual void Process()
         {
             if (Callback != null && ShouldTrigger())
             {

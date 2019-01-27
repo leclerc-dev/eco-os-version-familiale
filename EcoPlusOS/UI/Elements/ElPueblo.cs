@@ -9,7 +9,7 @@ using Point = Cosmos.System.Graphics.Point;
 
 namespace EcoPlusOS.UI.Elements
 {
-    public class ElPuebloDrawing : UIElement
+    public class ElPueblo : UIElement
     {
         #region Bitmaps
         public static readonly Bitmap ElPuebloBitmap = new Bitmap(64, 64, new byte[]
@@ -50,7 +50,6 @@ namespace EcoPlusOS.UI.Elements
         #endregion
         protected override void DrawImplementation()
         {
-            Kernel.PrintDebug("Owo print the el pueblob");
             Environment.DrawImage(ElPuebloBitmap, Location);
         }
 
@@ -76,7 +75,7 @@ namespace EcoPlusOS.UI.Elements
             return true;
         }
 
-        public ElPuebloDrawing(UIEnvironment env, Point location, Size size = default) : base(env, location, size)
+        public ElPueblo(UIEnvironment env, Point location, Size? size = null) : base(env, location, size ?? new Size(64, 64))
         {
             InputBindings.Add(new MouseBinding(BeepBoopElPueblo, this));
             InputBindings.Add(new KeyBinding(() => Move(5), ConsoleKeyEx.RightArrow));
@@ -93,6 +92,7 @@ namespace EcoPlusOS.UI.Elements
         private void BeepBoopElPueblo()
         {
             Songs.ElPuebloTouch.Play();
+            Location = new Point(RandomX(), RandomY());
         }
     }
 }

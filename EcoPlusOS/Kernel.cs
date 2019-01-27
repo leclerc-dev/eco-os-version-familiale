@@ -14,6 +14,14 @@ namespace EcoPlusOS
     public class Kernel : Sys.Kernel
     {
         public static Kernel Instance { get; private set; }
+        private Sys.ScanMapBase _scanMap;
+
+        public Sys.ScanMapBase ScanMap
+        {
+            get => _scanMap ?? (_scanMap = GetKeyboardScanMap());
+            set { _scanMap = value; SetKeyboardScanMap(_scanMap); }
+        }
+
         protected override void BeforeRun()
         {
             Instance = this;
@@ -81,7 +89,11 @@ namespace EcoPlusOS
             new LidlCommand(),
             new KiwiCommand()
         };
-
+        [Conditional("DEBUG")]
+        public new static void PrintDebug(string d)
+        {
+            Sys.Global.mDebugger.Send(DateTime.Now + " -> " + d);
+        }
         private class HelpCommand : ICommand
         {
             private const string UnknownHelpCommand = "Leclerc ne connait rien sur cette commande";

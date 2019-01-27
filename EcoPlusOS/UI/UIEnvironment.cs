@@ -4,6 +4,7 @@ using Cosmos.System;
 using Cosmos.System.Graphics;
 using EcoPlusOS.CustomLinq;
 using EcoPlusOS.UI.Core;
+using EcoPlusOS.UI.Core.Interactivity;
 using EcoPlusOS.UI.Elements;
 using EcoPlusOS.UI.Internal;
 using System;
@@ -14,6 +15,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using Console = System.Console;
+using Global = Cosmos.HAL.Global;
 using Point = Cosmos.System.Graphics.Point;
 
 namespace EcoPlusOS
@@ -50,7 +52,6 @@ namespace EcoPlusOS.UI
         {
             Initialize();
         }
-
         private List<UIElement> _elements = new List<UIElement>();
         private void Initialize()
         {
@@ -59,12 +60,9 @@ namespace EcoPlusOS.UI
 #endif
             Mode = mode; // update mode with the thing OwO;
             Clear(Color.Bisque);
-            _elements.Add(new EcoPlusLogo(this, new Point(10, 10), new Size(mode.Columns - 20, mode.Rows - 20)));
-            Kernel.PrintDebug("Eco+ yes");
-            _elements.Add(new ElPuebloDrawing(this, new Point(100, 55), Size.Empty));
-            Kernel.PrintDebug("El pueblo yes");
+            _elements.Add(new EcoPlusLogo(this, new Point(0, 0), size: new Size(mode.Columns, mode.Rows)));
+            _elements.Add(new ElPueblo(this, new Point(100, 55)));
             _mouseCursor = new MouseCursorElement(this);
-            Kernel.PrintDebug("Mouse YESSS");
             _elements.Add(_mouseCursor);
             //ElPueblo.Draw(this, new Point(100, 55));
             MouseManagerEx.SetDimensions(mode);
@@ -74,37 +72,15 @@ namespace EcoPlusOS.UI
 
         private void UIElementUpdated(UIElement element, Rectangle previousBounds)
         {
+            if (!UIElement.EnableEvent) return;
             UIElement.EnableEvent = false;
-            //var copy = new List<UIElement>();
-            //int index = -1;
-            //for (int i = 0; i < _elements.Count; i++)
-            //{
-            //    if (_elements[i] == element)
-            //    {
-            //        index = i;
-            //        break;
-            //    }
-            //}
-            //if (index == -1) goto fallback; // goto = éco+ code
-            //for (int i = index; i < _elements.Count; i++)
-            //{
-            //    Kernel.PrintDebug("Skipping: " + i);
-            //    copy.Add(_elements[i]);
-            //}
-            //copy = copy.CustomReverse();
-            //foreach (var e in copy)
-            //{
-            //    e.Draw();
-            //}
-            // SOOON smth better TODO please ^^
-            ProcessIntersections(element, previousBounds);
+            ProcessIntersections(in element, previousBounds);
             UIElement.EnableEvent = true;
         }
-
-        private void ProcessIntersections(UIElement element, Rectangle previousBounds, int startingIndex = 0)
+        // TODO children UIElements
+        private void ProcessIntersections(in UIElement element, Rectangle previousBounds, int startingIndex = 0)
         {
-            var elementsSoFar = new List<UIElement>();
-            bool areInFront = false;
+            var areInFront = false;
             for (var i = startingIndex; i < _elements.Count; i++)
             {
                 var e = _elements[i];
@@ -114,25 +90,28 @@ namespace EcoPlusOS.UI
                     areInFront = true;
                     continue;
                 }
-                var condition = e.LastRenderedBounds.IntersectsWith(element.LastRenderedBounds)
-                                || e.LastRenderedBounds.Contains(element.LastRenderedBounds)
-                                || e.LastRenderedBounds.IntersectsWith(previousBounds)
-                                || e.LastRenderedBounds.Contains(previousBounds);
-                foreach (var middleElement in elementsSoFar)
+                var condition = NeedsRendering(element, previousBounds, e);
+                for (var j = 0; j < i; j++)
                 {
                     if (condition) break;
-                    condition = e.LastRenderedBounds.IntersectsWith(middleElement.LastRenderedBounds)
-                                || e.LastRenderedBounds.Contains(element.LastRenderedBounds)
-                                || e.LastRenderedBounds.IntersectsWith(previousBounds)
-                                || e.LastRenderedBounds.Contains(previousBounds);
+                    var previous = _elements[j];
+                    condition = NeedsRendering(previous, previousBounds, e);
                 }
                 if (condition)
                 {
-                    elementsSoFar.Add(e);
-                    if (areInFront || !e.TryDrawPartial(previousBounds)) // TODO add better drawing for those in front. Please :c
+                    Kernel.PrintDebug("prev: " + previousBounds);
+                    if (areInFront || !e.TryDrawPartial(previousBounds))
                         e.Draw();
                 }
             }
+        }
+
+        private static bool NeedsRendering(UIElement element, Rectangle previousBounds, UIElement e)
+        {
+            return e.LastRenderedBounds.IntersectsWith(element.LastRenderedBounds)
+                   || e.LastRenderedBounds.Contains(element.LastRenderedBounds)
+                   || e.LastRenderedBounds.IntersectsWith(previousBounds)
+                   || e.LastRenderedBounds.Contains(previousBounds);
         }
 
         #region Startup
@@ -148,13 +127,14 @@ namespace EcoPlusOS.UI
                 throw;
             }
         }
-        public void StartInternal()
+        private void StartInternal()
         {
             while (true)
             {
+                KeyBinding.UpdateKey();
+                DisableOnEscapePress();
                 HandleUIElementEvents();
                 DrawMouse();
-                HandleKeyboardEvents();
                 if (!Driver.Enabled)
                 {
 #if !VMWare
@@ -166,23 +146,30 @@ namespace EcoPlusOS.UI
                 }
             }
         }
-        #endregion
-        private void HandleKeyboardEvents()
+
+        private void DisableOnEscapePress()
         {
-            if (KeyboardManager.TryReadKey(out var k))
+            if (KeyBinding.LastEvent?.Key == ConsoleKeyEx.Escape)
             {
-                if (k.Key == ConsoleKeyEx.Escape)
-                {
-                    Disable();
-                }
+                Disable();
             }
         }
+
+        #endregion
 
         private void DrawMouse()
         {
             try
             {
-                _mouseCursor.Location = MouseManagerEx.ToPoint();
+                var location = MouseManagerEx.ToPoint();
+                if  (_mouseCursor.Location.X - 1 <= location.X
+                    && _mouseCursor.Location.X + 1 >= location.X                                                             
+                    && _mouseCursor.Location.Y - 1 <= location.Y                                                              
+                    && _mouseCursor.Location.Y + 1 >= location.Y) // error margin 1
+                {
+                    return;
+                }
+                _mouseCursor.Location = location;
             }
             catch (Exception e)
             {
