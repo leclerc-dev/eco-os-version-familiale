@@ -81,7 +81,7 @@ namespace EcoPlusOS
         {
             new HelpCommand(),
             new GraphicsCommand(),
-            new BenchmarkTestCommand(),
+            new PerfTestCommand(),
             new DebugCommand(),
             new ShutdownCommand(),
             new PlaySongCommand(),
