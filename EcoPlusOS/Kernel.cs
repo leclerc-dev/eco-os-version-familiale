@@ -55,7 +55,7 @@ namespace EcoPlusOS
 
         private static void RunInternal()
         {
-            Console.Write("éco+> ");
+            Console.Write("leclerc-user@éco+-pc> ");
             var input = Console.ReadLine();
             if (input is null) return;
             foreach (var command in AllCommands)
