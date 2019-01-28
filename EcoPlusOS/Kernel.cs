@@ -87,7 +87,8 @@ namespace EcoPlusOS
             new PlaySongCommand(),
             new ClearCommand(),
             new LidlCommand(),
-            new KiwiCommand()
+            new KiwiCommand(),
+            new EcoverCommand()
         };
         [Conditional("DEBUG")]
         public new static void PrintDebug(string d)
